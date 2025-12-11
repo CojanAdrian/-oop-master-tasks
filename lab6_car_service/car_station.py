@@ -57,7 +57,7 @@ class CarStation:
             self.stats.register_refuel(car)
 
             # Dining
-            if car.is_dining and self.dining_service is not None:
+            if car.is_dining:
                 print(f"[ACTION] Serving dinner for car {car.id}")
                 self.dining_service.serve_dinner(car.id)
             else:
