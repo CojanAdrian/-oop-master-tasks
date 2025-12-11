@@ -1,30 +1,55 @@
 import json
 import random
-from pathlib import Path
 
+# Constants
+NR_OF_GENERATIONS = 30
 
-def generate_car(car_id: int):
-    return {
-        "id": car_id,
-        "type": random.choice(["ELECTRIC", "GAS"]),
-        "passengers": random.choice(["PEOPLE", "ROBOTS"]),
-        "isDining": random.choice([True, False]),
-        "consumption": random.randint(10, 50)
-    }
+# Car properties
+CAR_TYPES = ["ELECTRIC", "GAS"]
+PASSENGER_TYPES = ["PEOPLE", "ROBOTS"]
+IS_DINING = [True, False]
+CONSUMPTION_RANGE = (10, 50)
 
-
-def generate_cars_file(count=20):
-    queue_dir = Path("queue")
-    queue_dir.mkdir(exist_ok=True)
-
-    cars = [generate_car(i) for i in range(1, count + 1)]
-
-    out_file = queue_dir / "cars.json"
-    with out_file.open("w", encoding="utf-8") as f:
-        json.dump(cars, f, indent=4)
-
-    print(f"[SYNC] Generated {count} cars into {out_file}")
-
+# Statistics
+STATS = {
+    "ELECTRIC": 0,
+    "GAS": 0,
+    "PEOPLE": 0,
+    "ROBOTS": 0,
+    "DINING": 0,
+    "NOT_DINING": 0,
+    "CONSUMPTION": {"ELECTRIC": 0, "GAS": 0}
+}
 
 if __name__ == "__main__":
-    generate_cars_file(20)
+
+    all_cars = []
+
+    for i in range(1, NR_OF_GENERATIONS + 1):
+        cartype = random.choice(CAR_TYPES)
+        passengers = random.choice(PASSENGER_TYPES)
+        isDining = random.choice(IS_DINING)
+        consumption = random.randint(*CONSUMPTION_RANGE)
+
+        # update stats
+        STATS[cartype] += 1
+        STATS[passengers] += 1
+        STATS["DINING" if isDining else "NOT_DINING"] += 1
+        STATS["CONSUMPTION"][cartype] += consumption
+
+        car = {
+            "id": i,
+            "type": cartype,
+            "passengers": passengers,
+            "isDining": isDining,
+            "consumption": consumption,
+        }
+
+        all_cars.append(car)
+
+    # Write single file with all cars
+    with open("cars.json", "w") as f:
+        json.dump(all_cars, f, indent=4)
+
+    # Print stats (optional)
+    print(json.dumps(STATS, indent=4))

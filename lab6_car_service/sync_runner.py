@@ -91,7 +91,7 @@ def build_default_setup() -> Tuple[List[CarStation], Semaphore, ServiceStats]:
     return stations, semaphore, stats
 
 
-def run_sync(path_to_cars_json: str = "queue/cars.json") -> None:
+def run_sync(path_to_cars_json: str = "cars.json") -> None:
     """
     Synchronous version (Option B):
         - Read all cars from cars.json
